@@ -1,16 +1,15 @@
 import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
-import java.text.*;
-import java.net.*;
 import java.io.*;
 
 public class Server implements ActionListener {
 
     JTextField text;
     JPanel a1;
+
+    JScrollPane scrollPane; // Add a JScrollPane
+
     static Box vertical = Box.createVerticalBox();
     static JFrame f = new JFrame();
     static DataOutputStream dout;
@@ -72,15 +71,25 @@ public class Server implements ActionListener {
         name.setFont(new Font("SAN_SERIF", Font.BOLD, 18));
         p1.add(name);
 
+        // adding status
         JLabel status = new JLabel("Active Now");
         status.setBounds(110, 35, 100, 18);
         status.setForeground(Color.WHITE);
         status.setFont(new Font("SAN_SERIF", Font.BOLD, 14));
         p1.add(status);
 
+        // adding text field
         a1 = new JPanel();
         a1.setBounds(5, 75, 440, 570);
         f.add(a1);
+
+        // scroll bar
+        scrollPane = new JScrollPane(a1);
+        scrollPane.setBounds(5, 75, 440, 570);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        f.add(scrollPane);
+
+
 
         text = new JTextField();
         text.setBounds(5, 655, 310, 40);
@@ -94,6 +103,8 @@ public class Server implements ActionListener {
         send.addActionListener(this);
         send.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
         f.add(send);
+
+
 
         f.setSize(450, 700);
         f.setLocation(200, 50);
