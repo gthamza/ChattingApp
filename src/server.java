@@ -3,8 +3,12 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.FormattableFlags;
 
 public class Server implements ActionListener {
 
@@ -19,6 +23,8 @@ public class Server implements ActionListener {
     // Declare SimpleDateFormat and Calendar objects
     private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private static Calendar cal = Calendar.getInstance();
+
+    static DataOutputStream dout;
 
     Server() {
 
@@ -164,6 +170,33 @@ public class Server implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new Server();
+
+        try {
+
+            ServerSocket skt = new ServerSocket(6001);
+
+            while (true)
+            {
+                Socket s = skt.accept();
+                DataInputStream din = new DataInputStream(s.getInputStream());
+                DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+
+                while (true)
+                {
+                    String msg = din.readUTF();
+                    JPanel panel = new Server().formatLabel(msg);
+
+                    JPanel left = new JPanel(new BorderLayout());
+                    left.add(panel,BorderLayout.LINE_START);
+                    vertical.add(left);
+                    f.validate(); // Validate the frame to reflect the changes
+
+
+                }
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
