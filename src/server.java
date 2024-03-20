@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -12,7 +13,6 @@ public class Server implements ActionListener {
 
     static Box vertical = Box.createVerticalBox();
     static JFrame f = new JFrame();
-    static DataOutputStream dout;
 
     Server() {
 
@@ -89,8 +89,6 @@ public class Server implements ActionListener {
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         f.add(scrollPane);
 
-
-
         text = new JTextField();
         text.setBounds(5, 655, 310, 40);
         text.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
@@ -104,8 +102,6 @@ public class Server implements ActionListener {
         send.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
         f.add(send);
 
-
-
         f.setSize(450, 700);
         f.setLocation(200, 50);
         f.setUndecorated(true);
@@ -115,7 +111,50 @@ public class Server implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent ae) {
+        try {
+            String out = text.getText();
+            JPanel p2 = formatLabel(out);
 
+            a1.setLayout(new BorderLayout());
+
+            JPanel right = new JPanel(new BorderLayout());
+            right.add(p2, BorderLayout.LINE_END);
+            vertical.add(right);
+            vertical.add(Box.createVerticalStrut(15));
+
+            a1.add(vertical, BorderLayout.PAGE_START);
+
+            // Assuming you have a DataOutputStream initialized properly
+            // dout.writeUTF(out);
+
+            text.setText("");
+
+            f.repaint();
+            f.invalidate();
+            f.validate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Define formatLabel method to format the message
+    private JPanel formatLabel(String out) {
+        JPanel p3 = new JPanel();
+        p3.setLayout(new BoxLayout(p3, BoxLayout.Y_AXIS));
+
+        JLabel l1 = new JLabel("<html><p style = \"width : 150px\">" + out + "</p></html>");
+        l1.setBackground(new Color(37, 211, 102));
+        l1.setOpaque(true);
+        l1.setBorder(new EmptyBorder(15, 15, 15, 50));
+
+        // Timestamp
+        JLabel l2 = new JLabel();
+        l2.setText("12:33 PM");
+        l2.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+        p3.add(l1);
+        p3.add(l2);
+        return p3;
     }
 
     public static void main(String[] args) {
