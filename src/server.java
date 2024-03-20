@@ -3,6 +3,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class Server implements ActionListener {
 
@@ -13,6 +15,10 @@ public class Server implements ActionListener {
 
     static Box vertical = Box.createVerticalBox();
     static JFrame f = new JFrame();
+
+    // Declare SimpleDateFormat and Calendar objects
+    private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    private static Calendar cal = Calendar.getInstance();
 
     Server() {
 
@@ -147,13 +153,13 @@ public class Server implements ActionListener {
         l1.setOpaque(true);
         l1.setBorder(new EmptyBorder(15, 15, 15, 50));
 
-        // Timestamp
-        JLabel l2 = new JLabel();
-        l2.setText("12:33 PM");
-        l2.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        JLabel time = new JLabel();
+        time.setText(sdf.format(cal.getTime()));
 
+        // Add the timestamp to the panel
+        p3.add(time);
         p3.add(l1);
-        p3.add(l2);
+
         return p3;
     }
 
