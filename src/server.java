@@ -1,29 +1,19 @@
+
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
+import java.text.*;
+import java.net.*;
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.FormattableFlags;
 
 public class Server implements ActionListener {
 
     JTextField text;
     JPanel a1;
-
-    JScrollPane scrollPane; // Add a JScrollPane
-
     static Box vertical = Box.createVerticalBox();
     static JFrame f = new JFrame();
-
-    // Declare SimpleDateFormat and Calendar objects
-    private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-    private static Calendar cal = Calendar.getInstance();
-
     static DataOutputStream dout;
 
     Server() {
@@ -77,29 +67,21 @@ public class Server implements ActionListener {
         morevert.setBounds(420, 20, 10, 25);
         p1.add(morevert);
 
-        JLabel name = new JLabel("vishal");
+        JLabel name = new JLabel("Gaitonde");
         name.setBounds(110, 15, 100, 18);
         name.setForeground(Color.WHITE);
         name.setFont(new Font("SAN_SERIF", Font.BOLD, 18));
         p1.add(name);
 
-        // adding status
         JLabel status = new JLabel("Active Now");
         status.setBounds(110, 35, 100, 18);
         status.setForeground(Color.WHITE);
         status.setFont(new Font("SAN_SERIF", Font.BOLD, 14));
         p1.add(status);
 
-        // adding text field
         a1 = new JPanel();
         a1.setBounds(5, 75, 440, 570);
         f.add(a1);
-
-        // scroll bar
-        scrollPane = new JScrollPane(a1);
-        scrollPane.setBounds(5, 75, 440, 570);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        f.add(scrollPane);
 
         text = new JTextField();
         text.setBounds(5, 655, 310, 40);
@@ -125,6 +107,7 @@ public class Server implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         try {
             String out = text.getText();
+
             JPanel p2 = formatLabel(out);
 
             a1.setLayout(new BorderLayout());
@@ -136,8 +119,7 @@ public class Server implements ActionListener {
 
             a1.add(vertical, BorderLayout.PAGE_START);
 
-            // Assuming you have a DataOutputStream initialized properly
-            // dout.writeUTF(out);
+            dout.writeUTF(out);
 
             text.setText("");
 
@@ -149,53 +131,50 @@ public class Server implements ActionListener {
         }
     }
 
-    // Define formatLabel method to format the message
-    private JPanel formatLabel(String out) {
-        JPanel p3 = new JPanel();
-        p3.setLayout(new BoxLayout(p3, BoxLayout.Y_AXIS));
+    public static JPanel formatLabel(String out) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JLabel l1 = new JLabel("<html><p style = \"width : 150px\">" + out + "</p></html>");
-        l1.setBackground(new Color(37, 211, 102));
-        l1.setOpaque(true);
-        l1.setBorder(new EmptyBorder(15, 15, 15, 50));
+        JLabel output = new JLabel("<html><p style=\"width: 150px\">" + out + "</p></html>");
+        output.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        output.setBackground(new Color(37, 211, 102));
+        output.setOpaque(true);
+        output.setBorder(new EmptyBorder(15, 15, 15, 50));
+
+        panel.add(output);
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
         JLabel time = new JLabel();
         time.setText(sdf.format(cal.getTime()));
 
-        // Add the timestamp to the panel
-        p3.add(time);
-        p3.add(l1);
+        panel.add(time);
 
-        return p3;
+        return panel;
     }
 
     public static void main(String[] args) {
+        new Server();
 
         try {
-
             ServerSocket skt = new ServerSocket(6001);
-
-            while (true)
-            {
+            while(true) {
                 Socket s = skt.accept();
                 DataInputStream din = new DataInputStream(s.getInputStream());
-                DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+                dout = new DataOutputStream(s.getOutputStream());
 
-                while (true)
-                {
+                while(true) {
                     String msg = din.readUTF();
-                    JPanel panel = new Server().formatLabel(msg);
+                    JPanel panel = formatLabel(msg);
 
                     JPanel left = new JPanel(new BorderLayout());
-                    left.add(panel,BorderLayout.LINE_START);
+                    left.add(panel, BorderLayout.LINE_START);
                     vertical.add(left);
-                    f.validate(); // Validate the frame to reflect the changes
-
-
+                    f.validate();
                 }
             }
-
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
